@@ -7,15 +7,15 @@ db.createCollection("artistas"); //criar a coleção de artistas
 /*
 Estrutura:
     {
-        nome:"", -> nome do artista
-        pais:"", -> país de origem do artista
-        ano_nasc:"", -> ano de nascimento do artista
-        ano_morte:"", -> ano de morte do artista
-        id_artista: "" -> id do artista
+        nome: string, -> nome do artista
+        pais: string, -> país de origem do artista
+        ano_nasc: number, -> ano de nascimento do artista
+        ano_morte: number, -> ano de morte do artista
+        id_artista: string -> id do artista
     }
 */
 
-//inserindo as obras
+//inserindo os artistas
 db.artistas.insertMany([
   {
     nome: "Heitor Pereira",
@@ -103,13 +103,13 @@ db.createCollection("obras"); //criar a coleção de obras de arte
 /*
 Estrutura:
     {
-        nome:"", -> nome da obra
-        descricao:"", -> descrição da obra
-        tipo:"", -> tipo da obra (pintura/escultura/instalação)
-        ano:"", -> ano da obra
-        preco:"", -> preço da obra
-        id_obra:"" ->, id da obra
-        artistas_id:[] -> lista com os _id dos artistas responsáveis pela obra
+        nome: string, -> nome da obra
+        descricao: string, -> descrição da obra
+        tipo: string, -> tipo da obra (pintura/escultura/instalação)
+        ano: number, -> ano da obra
+        preco: number, -> preço da obra
+        id_obra: string ->, id da obra
+        artistas_id: string[] -> lista com os _id dos artistas responsáveis pela obra
     }
 */
 
@@ -277,12 +277,12 @@ db.createCollection("galerias"); //criar a coleção de galerias
 /*
 Estrutura:
     {
-        nome:"", -> nome da galeria
+        nome: string, -> nome da galeria
         localizacao:{ -> localização da obra
-            cidade:"",
-            pais:"",
+            cidade: string,
+            pais: string,
         },
-        obras_id:[] -> lista com os _id dos obras presentes na galeria
+        obras_id: string[] -> lista com os _id dos obras presentes na galeria
     }
 */
 
