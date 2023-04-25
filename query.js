@@ -97,9 +97,29 @@ db.obras.aggregate([
   { $limit: 2 },
 ]);
 
+// 24 - FILTER
+// Filtrar as obras dos artistas com preço maior que 1000
+db.artistas.aggregate([
+  {
+    $project: {
+      nome: 1,
+      obras_filtradas: {
+        $filter: {
+          input: "$obras",
+          as: "obra",
+          cond: { $gt: ["$$obra.preco", 1000] }
+        }
+      }
+    }
+  }
+]);
+
+
 // 25 - UPDATE
 // atualizar o preço da obra "O Trevo de Sangue"
 db.obras.updateOne({ nome: "O Trevo de Sangue" }, { $set: { preco: 1200 } });
+
+
 
 // 27 - RENAMECOLLECTION
 // renomear a coleção "galerias" para "galerias_de_arte"
