@@ -97,6 +97,55 @@ db.obras.aggregate([
   { $limit: 2 },
 ]);
 
+// 25 - UPDATE
+// atualizar o preço da obra "O Trevo de Sangue"
+db.obras.updateOne({ nome: "O Trevo de Sangue" }, { $set: { preco: 1200 } });
+
+// 27 - RENAMECOLLECTION
+// renomear a coleção "galerias" para "galerias_de_arte"
+db.galerias.renameCollection("galerias_de_arte");
+
+// 28 - COND
+// calcular a média de preços das obras, separadas por serem caras ou baratas (definindo caras como preço maior que 2000)
+db.obras.aggregate([
+  {
+    $group: {
+      _id: { $cond: [{ $gt: ["$preco", 2000] }, "Caras", "Baratas"] },
+      media_preco: { $avg: "$preco" },
+    },
+  },
+]);
+
+// 29 - LOOKUP
+// listar todas as obras e seus respectivos artistas
+db.obras.aggregate([
+  {
+    $lookup: {
+      from: "artistas",
+      localField: "artistas_id",
+      foreignField: "_id",
+      as: "artistas",
+    },
+  },
+]);
+
+// 30 - FINDONE
+// encontrar a primeira obra do tipo "escultura"
+db.obras.findOne({ tipo: "escultura" });
+
+// 31 - ADDTOSET
+// encontrar todos os países dos artistas sem duplicatas
+db.artistas.aggregate([
+  {
+    $group: {
+      _id: null,
+      paises: { $addToSet: "$pais" },
+    },
+  },
+]);
+
+
+
 //WHERE + FUNCTION + PRETTY: artistas que morreram com menos de 50 anos
 db.artistas
   .find({
