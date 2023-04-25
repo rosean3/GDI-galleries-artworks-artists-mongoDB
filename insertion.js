@@ -282,11 +282,51 @@ Estrutura:
 //inserindo as galerias
 db.galerias.insertMany([
     {
-        nome:"",
-        localizacao:{
-            cidade:"",
-            pais:""
+        nome: "Galeria 22",
+        localizacao: {
+          cidade: "Sao Paulo",
+          pais: "Brasil"
         },
-        obras_id:[]
-    },
+        obras_id: [db.obras.findOne({id_obra:"ins_02"}), db.obras.findOne({id_obra:"esc_00"}), db.obras.findOne({id_obra:"esc_03"}), db.obras.findOne({id_obra:"ins_00"}), db.obras.findOne({id_obra:"pin_07"}), db.obras.findOne({id_obra:"pin_03"}), db.obras.findOne({id_obra:"pin_06"})]
+      },
+      {
+        nome: "Galeria Chico Science",
+        localizacao: {
+          cidade: "Recife",
+          pais: "Brasil"
+        },
+        obras_id: [db.obras.findOne({id_obra:"ins_00"}), db.obras.findOne({id_obra:"pin_07"}), db.obras.findOne({id_obra:"pin_03"}), db.obras.findOne({id_obra:"pin_06"})]
+      },
+      {
+        nome: "Galeria Mark Twain",
+        localizacao: {
+          cidade: "Nova Orleans",
+          pais: "EUA"
+        },
+        obras_id: [db.obras.findOne({id_obra:"esc_01"}), db.obras.findOne({id_obra:"esc_02"}), db.obras.findOne({id_obra:"esc_03"}), db.obras.findOne({id_obra:"ins_02"})]
+      },
+      {
+        nome: "Galeria Vermelha",
+        localizacao: {
+          cidade: "Pequim",
+          pais: "China"
+        },
+        obras_id: [db.obras.findOne({id_obra:"pin_05"}), db.obras.findOne({id_obra:"pin_04"}), db.obras.findOne({id_obra:"pin_07"}), db.obras.findOne({id_obra:"esc_01"})]
+      },
+      {
+        nome: "Galeria Keane",
+        localizacao: {
+          cidade: "Sligo",
+          pais: "Irlanda"
+        },
+        obras_id: [db.obras.findOne({id_obra:"pin_00"}), db.obras.findOne({id_obra:"pin_01"}), db.obras.findOne({id_obra:"pin_02"}), db.obras.findOne({id_obra:"ins_01"}), db.obras.findOne({id_obra:"pin_04"})]
+      },
+      {
+        nome: "Galeria Real",
+        localizacao: {
+          cidade: "Oxford",
+          pais: "Inglaterra"
+        },
+        obras_id: [db.obras.findOne({id_obra:"pin_00"}), db.obras.findOne({id_obra:"esc_00"}), db.obras.findOne({id_obra:"pin_02"}), db.obras.findOne({id_obra:"ins_01"}), db.obras.findOne({id_obra:"esc_01"})]
+      }
 ]);
