@@ -97,6 +97,72 @@ db.obras.aggregate([
   { $limit: 2 },
 ]);
 
+// 16 - $WHERE
+// Artistas que morreram com menos de 50 anos
+db.artistas.find({
+    $where: function () {
+      return this.ano_morte - this.ano_nasc < 50;
+    },
+  }).pretty();
+
+// 17 - MAPREDUCE
+// Tipo da obra - Preço total das obras desse tipo cadastradas
+db.obras.mapReduce(
+  function () {
+    emit(this.tipo, this.preco);
+  },
+  function (key, values) {
+    return Array.sum(values);
+  },
+  {
+    out: "tipo_preco",
+  }
+);
+
+// 18 - FUNCTION
+// artistas brasileiros
+db.artistas.find(function () {
+  return this.pais == "Brasil";
+});
+
+// 19 - PRETTY
+// Obra mais cara
+db.obras.find().sort({preco: -1}).limit(1).pretty();
+
+// 20 - ALL
+//galerias que possuem os tres tipos de obras
+db.galerias.find(
+  {
+    obras_id: {
+      $all: [
+       {"$elemMatch": { tipo: "instalacao"}},
+        {"$elemMatch": { tipo: "escultura"}},
+        {"$elemMatch": { tipo: "pintura"}}
+      ]
+    }
+  }
+).pretty();
+
+// 21 - SET
+// Atualizar o preço da obra "A Latina" para 3500
+db.obras.updateOne(
+  {nome: "A Latina"},
+  {
+    $set: {
+       preco: 3500 
+    }
+  }
+)
+
+// 22 - TEXT
+// Obras que tenham a palavra mulheres no titulo ou em sua descrição
+db.obras.find({$text: {$search: "mulheres"}})
+
+
+// 23 - SEARCH
+// Artistas que tem o nome Heitor
+db.artistas.find({ $text: { $search: "Heitor" } });
+
 // 24 - FILTER
 // Filtrar as obras dos artistas com preço maior que 1000
 db.artistas.aggregate([
@@ -107,19 +173,16 @@ db.artistas.aggregate([
         $filter: {
           input: "$obras",
           as: "obra",
-          cond: { $gt: ["$$obra.preco", 1000] }
-        }
-      }
-    }
-  }
+          cond: { $gt: ["$$obra.preco", 1000] },
+        },
+      },
+    },
+  },
 ]);
-
 
 // 25 - UPDATE
 // atualizar o preço da obra "O Trevo de Sangue"
 db.obras.updateOne({ nome: "O Trevo de Sangue" }, { $set: { preco: 1200 } });
-
-
 
 // 27 - RENAMECOLLECTION
 // renomear a coleção "galerias" para "galerias_de_arte"
@@ -165,16 +228,6 @@ db.artistas.aggregate([
 ]);
 
 
-
-//WHERE + FUNCTION + PRETTY: artistas que morreram com menos de 50 anos
-db.artistas
-  .find({
-    $where: function () {
-      return this.ano_morte - this.ano_nasc < 50;
-    },
-  })
-  .pretty();
-
 // ? Use "better comments" extension for a proper visualization of the checlist ;)
 
 /*
@@ -196,20 +249,19 @@ db.artistas
 * 14. SORT 
 * 15. LIMIT 
 * 16. $WHERE
-! 17. MAPREDUCE 
+* 17. MAPREDUCE 
 * 18. FUNCTION 
 * 19. PRETTY 
-! 20. ALL 
-! 21. SET 
-! 22. TEXT 
-! 23. SEARCH 
-! 24. FILTER 
-! 25. UPDATE 
-! 26. SAVE 
-! 27. RENAMECOLLECTION 
-! 28. COND 
-! 29. LOOKUP 
-! 30. FINDONE 
-! 31. ADDTOSET 
-
+* 20. ALL 
+* 21. SET 
+* 22. TEXT 
+* 23. SEARCH 
+* 24. FILTER 
+* 25. UPDATE 
+* 26. SAVE 
+* 27. RENAMECOLLECTION 
+* 28. COND 
+* 29. LOOKUP 
+* 30. FINDONE 
+* 31. ADDTOSET 
 */

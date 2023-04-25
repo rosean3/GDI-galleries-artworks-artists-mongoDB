@@ -3,7 +3,7 @@ db = db.getSiblingDB("arts"); //acessar a database -> feito assim para permitir 
 db.dropDatabase(); //limpar a database para fazer os inserts
 
 db.createCollection("artistas"); //criar a coleção de artistas
-
+db.artistas.createIndex({ nome: "text" });
 /*
 Estrutura:
     {
@@ -99,7 +99,7 @@ db.artistas.insertMany([
 ]);
 
 db.createCollection("obras"); //criar a coleção de obras de arte
-
+db.obras.createIndex({ nome: "text", descricao: "text" });
 /*
 Estrutura:
     {
@@ -118,7 +118,7 @@ db.obras.insertMany([
   {
     nome: "A Lata e Meta",
     descricao: `Uma instalação de arte que aborda a relação entre a simplicidade
-      e a complexidade, ou entre o que é tangível e o que é intangível.`,
+        e a complexidade, ou entre o que é tangível e o que é intangível.`,
     tipo: "instalacao",
     id_obra: "ins_00",
     artistas_id: db.artistas.findOne({ id_artista: "art_09" })._id,
@@ -126,9 +126,9 @@ db.obras.insertMany([
   {
     nome: "O Guitarrista e o Irmao",
     descricao: `As cores usadas na pintura são mais escuras, representando a tensão
-      e o conflito entre as personagens. A técnica de pintura usada é bastande abstrata,
-      com traços e pinceladas mais agressivas, transmitindo o sentimento de tensão e
-      desconforto na cena.`,
+        e o conflito entre as personagens. A técnica de pintura usada é bastande abstrata,
+        com traços e pinceladas mais agressivas, transmitindo o sentimento de tensão e
+        desconforto na cena.`,
     tipo: "pintura",
     ano: 2009,
     preco: 2530.31,
@@ -138,7 +138,7 @@ db.obras.insertMany([
   {
     nome: "A Latina",
     descricao: `A figura feminina se apresenta em uma postura altiva, com a cabeça
-      erguida e os braços cruzados, transmitindo uma sensação de força e determinação.`,
+        erguida e os braços cruzados, transmitindo uma sensação de força e determinação.`,
     tipo: "escultura",
     ano: 2019,
     preco: 3337.28,
@@ -148,7 +148,7 @@ db.obras.insertMany([
   {
     nome: "O Trevo de Sangue",
     descricao: `A pintura evoca a história turbulenta da Irlanda, com suas guerras
-      e conflitos.`,
+        e conflitos.`,
     tipo: "pintura",
     ano: 1662,
     preco: 1158.14,
@@ -158,7 +158,7 @@ db.obras.insertMany([
   {
     nome: "Os Povos",
     descricao: `A pintura retrata as diferentes culturas e etnias que
-      compõem a África do Sul e o continente africano como um todo.`,
+        compõem a África do Sul e o continente africano como um todo.`,
     tipo: "pintura",
     ano: 1921,
     preco: 999.37,
@@ -168,8 +168,8 @@ db.obras.insertMany([
   {
     nome: "A Solidao",
     descricao: `A instalação é composta por uma variedade de elementos,
-      como objetos, luzes, sons e imagens, que trabalham juntos para evocar
-      a sensação de solidão.`,
+        como objetos, luzes, sons e imagens, que trabalham juntos para evocar
+        a sensação de solidão.`,
     tipo: "instalacao",
     id_obra: "ins_01",
     artistas_id: db.artistas.findOne({ id_artista: "art_02" })._id,
@@ -177,7 +177,7 @@ db.obras.insertMany([
   {
     nome: "O Poder",
     descricao: `A figura se apresenta de forma majestosa e imponente,
-      evocando a imagem de um líder poderoso.`,
+        evocando a imagem de um líder poderoso.`,
     tipo: "escultura",
     ano: 1890,
     preco: 668.35,
@@ -196,8 +196,8 @@ db.obras.insertMany([
   {
     nome: "O Futuro",
     descricao: `A pintura apresenta uma paisagem urbana futurista,
-      com arranha-céus altos e imponentes, veículos voadores, tecnologias
-      avançadas e uma atmosfera de progresso e inovação. `,
+        com arranha-céus altos e imponentes, veículos voadores, tecnologias
+        avançadas e uma atmosfera de progresso e inovação. `,
     tipo: "pintura",
     ano: 1901,
     preco: 3443.62,
@@ -207,7 +207,7 @@ db.obras.insertMany([
   {
     nome: "O Ator",
     descricao: `A obra retrata um ator em pose dramática, com
-      gestos exagerados e uma expressão facial intensa.`,
+        gestos exagerados e uma expressão facial intensa.`,
     tipo: "escultura",
     ano: 1894,
     preco: 4728.45,
@@ -235,7 +235,7 @@ db.obras.insertMany([
   {
     nome: "Brasil-China",
     descricao: `Uma colaboração de artistas famosos de diferentes
-        origens`,
+          origens`,
     tipo: "pintura",
     ano: 1980,
     preco: 2914.43,
@@ -248,8 +248,8 @@ db.obras.insertMany([
   {
     nome: "Duas Mulheres, Dois Mundos",
     descricao: `A obra retrata duas mulheres de diferentes lugares
-        do mundo, enfatizando tanto suas similarides quanto suas 
-        disparidades.`,
+          do mundo, enfatizando tanto suas similarides quanto suas 
+          disparidades.`,
     tipo: "escultura",
     ano: 2014,
     preco: 2128.45,
@@ -262,7 +262,7 @@ db.obras.insertMany([
   {
     nome: "Duas Mulheres, Dois Mundos: O Ato ",
     descricao: `Uma instalação baseada na escultura das artistas de
-        mesmo nome.`,
+          mesmo nome.`,
     tipo: "instalacao",
     id_obra: "ins_02",
     artistas_id: [
