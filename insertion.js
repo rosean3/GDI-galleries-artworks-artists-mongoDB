@@ -1,4 +1,4 @@
-db = db.getSiblingDB("arts"); //acessar a database
+db = db.getSiblingDB("arts"); //acessar a database -> feito assim para permitir usar o load() no mongo
 
 db.dropDatabase(); //limpar a database para fazer os inserts
 
