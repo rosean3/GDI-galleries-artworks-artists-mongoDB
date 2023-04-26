@@ -259,7 +259,7 @@ do mundo, enfatizando tanto suas similarides quanto suas disparidades.`,
     ]
   },
   {
-    nome: "Duas Mulheres, Dois Mundos: O Ato ",
+    nome: "Duas Mulheres, Dois Mundos: O Ato",
     descricao: `Uma instalação baseada na escultura das artistas de
 mesmo nome.`,
     tipo: "instalacao",

@@ -1,12 +1,44 @@
-// 1.USE => acessar a database
+//1.USE => acessar a database
 use arts;
 
-// 2.FIND => retornar os artistas que estão vivos, ordenados pela. mostrar apenas o nome e a data de nascimento
+//2.FIND => retornar os artistas que estão vivos, ordenados pelo ano de nascimento. mostrar apenas o nome e o ano de nascimento
 db.artistas.find({ano_morte:null}, {_id:0, nome:1, ano_nasc:1}).sort({ano_nasc: 1});
 
-// 3.SIZE => retornar as galerias que possuem exatamente 4 obras em seu acervo, mostrando apenas o nome da galeria e os nomes das obras.
+//3.SIZE => retornar as galerias que possuem exatamente 4 obras em seu acervo, mostrando apenas o nome da galeria e os nomes das obras.
+db.galerias.aggregate([
+  {
+    $lookup: {
+      from: "obras",
+      localField: "obras_id",
+      foreignField: "_id",
+      as: "obras"
+    }
+  },
+  {
+    $unwind: "$obras"
+  },
+  {
+    $group: {
+      _id: "$_id",
+      nome: { $first: "$nome" },
+      obras: { $push: "$obras.nome" }
+    }
+  },
+  {
+    $match: {
+      obras: { $size: 4 }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      nome: 1,
+      obras: 1
+    }
+  }
+]);
 
-// 4.AGGREGATE => nome e idade dos artistas
+//4.AGGREGATE => nome e idade dos artistas
 db.artistas.aggregate([
   {
     $project: {
@@ -23,7 +55,43 @@ db.artistas.aggregate([
   }
 ]);
 
-// 8.GROUP => total de obras de cada tipo
+//5.MATCH => retornar apenas as obras em que mais de um artista está envolvido
+db.obras.aggregate([
+  {
+    $match: {
+      artistas_id: {
+        $type: "array"
+      }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      nome: 1
+    }
+  }
+]);
+
+//6.PROJECT => retornar as galerias que estão no Brasil, mostrando apenas o nome e localização completa delas
+db.galerias.aggregate([
+  {
+    $match: {
+      "localizacao.pais": "Brasil"
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      nome: 1,
+      localizacao: 1
+    }
+  }
+]);
+
+//7.GTE => retornar o nome dos artistas que nasceram no século XX e o ano de nascimento deles, ordenados em ordem decrescente dos anos de nascimento
+db.artistas.find({ano_nasc: {$gte: 1900}}, {_id: 0, nome:1, ano_nasc:1}).sort({ano_nasc: -1});
+
+//8.GROUP => total de obras de cada tipo
 db.obras.aggregate([
   {
     $group: {
@@ -33,8 +101,8 @@ db.obras.aggregate([
   }
 ]);
 
-// 9.SUM => total do preço de obras em cada galeria
-// estamos agrupando por id da galeria
+//9.SUM => total do preço de obras em cada galeria
+//estamos agrupando por id da galeria
 db.galerias.aggregate([
 
   {
@@ -62,11 +130,11 @@ db.galerias.aggregate([
   }
 ]);
 
-// 10.COUNT => número de obras cujo preço é maior que 2000
+//10.COUNT => número de obras cujo preço é maior que 2000
 db.obras.count({ preco: { $gt: 2000 } });
 
-// 11.MAX => o preço da obra mais cara da Galeria Chico Science
-// estamos agrupando por id da galeria
+//11.MAX => o preço da obra mais cara da Galeria Chico Science
+//estamos agrupando por id da galeria
 db.galerias.aggregate([
   {
     $match: { nome: "Galeria Chico Science" },
@@ -96,7 +164,7 @@ db.galerias.aggregate([
   }
 ]);
 
-// 12.AVG => média das idades dos artistas
+//12.AVG => média das idades dos artistas
 db.artistas.aggregate([
   {
     $group: {
@@ -114,14 +182,14 @@ db.artistas.aggregate([
   }
 ]);
 
-// 13.EXISTS => artistas que já faleceram
-db.artistas.find({ ano_morte: { $exists: true } });
+//13.EXISTS => artistas que já faleceram
+db.artistas.find({ ano_morte: { $exists: true}});
 
-// 14.SORT
-// ordena os artistas por ano de nascimento
-db.artistas.find().sort({ ano_nasc: 1 });
+//14.SORT
+//ordena os artistas por ano de nascimento
+db.artistas.find().sort({ ano_nasc: 1});
 
-// ordena as obras por ano de criação e selciona as que foram criadas antes do século XXI, mostrando apenas o nome, a descricao, o tipo e o ano de criação da obra
+//ordena as obras por ano de criação e selciona as que foram criadas antes do século XXI, mostrando apenas o nome, a descricao, o tipo e o ano de criação da obra
 db.obras.aggregate([
   { 
     $match: {
@@ -144,8 +212,7 @@ db.obras.aggregate([
   }
 ]);
 
-// 15.LIMIT
-// mostrar só duas obras do tipo "instalação"
+//15.LIMIT => mostrar só duas obras do tipo "instalação"
 db.obras.find({ tipo: "instalacao" }).limit(2);
 
 // mostrar as duas esculturas mais novas
@@ -165,16 +232,15 @@ db.obras.aggregate([
   }
 ]);
 
-// 16.$WHERE
-// Artistas que morreram com menos de 50 anos
+//16.$WHERE => artistas que morreram com menos de 50 anos
 db.artistas.find({
     $where: function () {
       return this.ano_morte - this.ano_nasc < 50;
     },
   }).pretty();
 
-// 17.MAPREDUCE
-// Tipo da obra - Preço total das obras desse tipo cadastradas
+//17.MAPREDUCE
+//tipo da obra - Preço total das obras desse tipo cadastradas
 db.obras.mapReduce(
   function () {
     emit(this.tipo, this.preco);
@@ -187,19 +253,17 @@ db.obras.mapReduce(
   }
 );
 
-// 18.FUNCTION
-// retornar artistas brasileiros
+//18.FUNCTION
+//retornar artistas brasileiros
 db.artistas.find().toArray().filter(function(doc) {
   return doc.pais === "Brasil";
 });
 
 
-// 19.PRETTY
-// Obra mais cara
+//19.PRETTY => mostrar a obra mais cara
 db.obras.find().sort({preco: -1}).limit(1).pretty();
 
-// 20.ALL
-//retornar as galerias que possuem os tres tipos de obras, mostrando o nome da galeria e aa lista com os nomes e os tipos das obras de cada galeria
+//20.ALL => retornar as galerias que possuem os tres tipos de obras, mostrando o nome da galeria e aa lista com os nomes e os tipos das obras de cada galeria
 
 db.galerias.aggregate([
   {
@@ -232,21 +296,17 @@ db.galerias.aggregate([
 ])
 
 
-// 21.SET
-// Atualizar o preço da obra "A Latina" para 3500
+//21.SET => atualizar o preço da obra "A Latina" para 3500
 db.obras.updateOne({nome: "A Latina"},{$set: {preco: 3500}})
 
-// 22.TEXT
-// Obras que tenham a palavra mulheres no titulo ou em sua descrição
+//22.TEXT => obras que tenham a palavra mulheres no titulo ou em sua descrição
 db.obras.find({$text: {$search: "mulheres"}})
 
 
-// 23.SEARCH
-// Artistas que tem o nome Heitor
+//23.SEARCH => procurar artistas que tem o nome Heitor
 db.artistas.find({ $text: { $search: "Heitor" } });
 
-// 24.FILTER
-// Filtrar apenas as obras do tipo pintura de uma galeria, retornando o nome da galeria e uma lista com os nomes e os tipos das obras de cada uma. Além disso, excluir as galerias sem pinturas.
+//24.FILTER => filtrar apenas as obras do tipo pintura de uma galeria, retornando o nome da galeria e uma lista com os nomes e os tipos das obras de cada uma. Além disso, excluir as galerias sem pinturas.
 db.galerias.aggregate([
   {
     $lookup: {
@@ -283,16 +343,13 @@ db.galerias.aggregate([
   }
 ]);
 
-// 25.UPDATE
-// atualizar o preço da obra "O Trevo de Sangue"
+//25.UPDATE => atualizar o preço da obra "O Trevo de Sangue"
 db.obras.updateOne({ nome: "O Trevo de Sangue" }, { $set: { preco: 1200 } });
 
-// 27.RENAMECOLLECTION
-// renomear a coleção "galerias" para "galerias_de_arte"
+//27.RENAMECOLLECTION => renomear a coleção "galerias" para "galerias_de_arte"
 db.galerias.renameCollection("galerias_de_arte");
 
-// 28.COND
-// calcular a média de preços das obras, separadas por serem caras ou baratas (definindo caras como preço maior que 2000)
+//28.COND => calcular a média de preços das obras, separadas por serem caras ou baratas (definindo caras como preço maior que 2000)
 db.obras.aggregate(
   {
     $group: {
@@ -302,8 +359,7 @@ db.obras.aggregate(
   },
 );
 
-// 29.LOOKUP
-// listar todas as obras e seus respectivos artistas
+//29.LOOKUP => listar todas as obras e seus respectivos artistas
 db.obras.aggregate(
   {
     $lookup: {
@@ -315,53 +371,56 @@ db.obras.aggregate(
   }
 );
 
-// 30.FINDONE
-// encontrar a primeira obra do tipo "escultura"
+//30.FINDONE => encontrar a primeira obra do tipo "escultura"
 db.obras.findOne({ tipo: "escultura" });
 
-// 31.ADDTOSET
-// encontrar todos os países dos artistas sem duplicatas
-db.artistas.aggregate(
+//31.ADDTOSET => encontrar todos os países dos artistas sem duplicatas
+db.artistas.aggregate([
   {
     $group: {
       _id: null,
-      paises: { $addToSet: "$pais" },
+      paises: { $addToSet: "$pais" }
+    },
+  },
+  {
+    $project: {
+      _id: 0
     }
   }
-);
+]);
 
 /*
 --CHECKLIST--
 
-[X] 1. USE 
-[X] 2. FIND 
-[ ] 3. SIZE 
-[ ] 4. AGGREGATE 
-[ ] 5. MATCH 
-[ ] 6. PROJECT 
-[ ] 7. GTE 
-[X] 8. GROUP 
-[X] 9. SUM 
-[X] 10. COUNT
-[X] 11. MAX 
-[X] 12. AVG 
-[X] 13. EXISTS 
-[X] 14. SORT 
-[X] 15. LIMIT 
-[X] 16. $WHERE
-[X] 17. MAPREDUCE 
-[X] 18. FUNCTION 
-[X] 19. PRETTY 
-[X] 20. ALL 
-[X] 21. SET 
-[X] 22. TEXT 
-[X] 23. SEARCH 
-[X] 24. FILTER 
-[X] 25. UPDATE 
-[!] 26. SAVE -> 
-[X] 27. RENAMECOLLECTION 
-[X] 28. COND 
-[X] 29. LOOKUP 
-[X] 30. FINDONE 
-[X] 31. ADDTOSET 
+[X] 1.USE 
+[X] 2.FIND 
+[X] 3.SIZE 
+[X] 4.AGGREGATE 
+[X] 5.MATCH 
+[X] 6.PROJECT 
+[ ] 7.GTE 
+[X] 8.GROUP 
+[X] 9.SUM 
+[X] 10.COUNT
+[X] 11.MAX 
+[X] 12.AVG 
+[X] 13.EXISTS 
+[X] 14.SORT 
+[X] 15.LIMIT 
+[X] 16.$WHERE
+[X] 17.MAPREDUCE 
+[X] 18.FUNCTION 
+[X] 19.PRETTY 
+[X] 20.ALL 
+[X] 21.SET 
+[X] 22.TEXT 
+[X] 23.SEARCH 
+[X] 24.FILTER 
+[X] 25.UPDATE 
+[!] 26.SAVE -> 
+[X] 27.RENAMECOLLECTION 
+[X] 28.COND 
+[X] 29.LOOKUP 
+[X] 30.FINDONE 
+[X] 31.ADDTOSET 
 */
