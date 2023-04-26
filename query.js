@@ -102,7 +102,6 @@ db.obras.aggregate([
 ]);
 
 //9.SUM => total do preço de obras em cada galeria
-//estamos agrupando por id da galeria
 db.galerias.aggregate([
   {
     $lookup: {
