@@ -398,7 +398,7 @@ db.artistas.aggregate([
 [X] 4.AGGREGATE 
 [X] 5.MATCH 
 [X] 6.PROJECT 
-[ ] 7.GTE 
+[X] 7.GTE 
 [X] 8.GROUP 
 [X] 9.SUM 
 [X] 10.COUNT
@@ -417,7 +417,7 @@ db.artistas.aggregate([
 [X] 23.SEARCH 
 [X] 24.FILTER 
 [X] 25.UPDATE 
-[!] 26.SAVE -> 
+[!] 26.SAVE
 [X] 27.RENAMECOLLECTION 
 [X] 28.COND 
 [X] 29.LOOKUP 
