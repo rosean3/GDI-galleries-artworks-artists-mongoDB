@@ -104,7 +104,6 @@ db.obras.aggregate([
 //9.SUM => total do preço de obras em cada galeria
 //estamos agrupando por id da galeria
 db.galerias.aggregate([
-
   {
     $lookup: {
       from: "obras",
@@ -114,21 +113,14 @@ db.galerias.aggregate([
     }
   },
   {
-    $unwind: "$obras"
-  },
-  {
-    $group: {
-      _id: "$_id",
-      nome: { $first: "$nome" },
-      total: { $sum: "$obra.preco" }
-    }
-  },
-  {
     $project: {
-      _id: 0
+      _id: 0,
+      nome: 1,
+      total_obras: { $sum: "$obras.preco" }
     }
   }
 ]);
+
 
 //10.COUNT => número de obras cujo preço é maior que 2000
 db.obras.count({ preco: { $gt: 2000 } });
