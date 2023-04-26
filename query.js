@@ -88,7 +88,7 @@ db.galerias.aggregate([
   }
 ]);
 
-//7.GTE => retornar o nome dos artistas que nasceram no século XX e o ano de nascimento deles, ordenados em ordem decrescente dos anos de nascimento
+//7.GTE => retornar o nome dos artistas que nasceram a partir de 1900 e o ano de nascimento deles, ordenados em ordem decrescente dos anos de nascimento
 db.artistas.find({ano_nasc: {$gte: 1900}}, {_id: 0, nome:1, ano_nasc:1}).sort({ano_nasc: -1});
 
 //8.GROUP => total de obras de cada tipo
